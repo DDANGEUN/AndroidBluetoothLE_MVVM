@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="10dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:orientation="horizontal"
+    android:background="#ddd"
+    tools:ignore="MissingDefaultResource">
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="7"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/ble_name"
+            android:layout_width="match_parent"
+            android:layout_weight="2"
+            android:layout_height="0dp"
+            android:textColor="@color/black"
+            android:textSize="22sp"
+            android:text="name"/>
+        <TextView
+            android:id="@+id/ble_address"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="0dp"
+            android:text="12:13:13:5a:ee"/>
+    </LinearLayout>
+    <Button
+        android:id="@+id/btn_connect"
+        android:layout_margin="10dp"
+        android:layout_width="0dp"
+        android:layout_weight="2.5"
+        android:layout_height="match_parent"
+        android:textSize="11sp"
+        android:text="conncect"/>
+
+
+</LinearLayout>
