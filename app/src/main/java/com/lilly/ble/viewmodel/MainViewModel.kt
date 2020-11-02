@@ -20,6 +20,7 @@ import com.lilly.ble.Constants
 import com.lilly.ble.Constants.Companion.CLIENT_CHARACTERISTIC_CONFIG
 import com.lilly.ble.MyApplication
 import com.lilly.ble.Repository
+import com.lilly.ble.util.BluetoothUtils
 import com.lilly.ble.util.BluetoothUtils.Companion.findResponseCharacteristic
 import com.lilly.ble.util.Event
 import kotlinx.coroutines.launch
@@ -281,6 +282,25 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             bleGatt!!.disconnect()
             bleGatt!!.close()
             statusTxt.set("Disconnected")
+        }
+    }
+
+    fun onClickWrite(){
+        val cmdCharacteristic = BluetoothUtils.findCommandCharacteristic(bleGatt!!)
+        // disconnect if the characteristic is not found
+        if (cmdCharacteristic == null) {
+            Log.e(TAG, "Unable to find cmd characteristic")
+            disconnectGattServer()
+            return
+        }
+        val cmdBytes = ByteArray(2)
+        cmdBytes[0] = 1
+        cmdBytes[1] = 2
+        cmdCharacteristic.value = cmdBytes
+        val success: Boolean = bleGatt!!.writeCharacteristic(cmdCharacteristic)
+        // check the result
+        if( !success ) {
+            Log.e(TAG, "Failed to write command")
         }
     }
 
