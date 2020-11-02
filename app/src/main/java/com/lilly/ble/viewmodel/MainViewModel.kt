@@ -280,6 +280,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         if (bleGatt != null) {
             bleGatt!!.disconnect()
             bleGatt!!.close()
+            statusTxt.set("Disconnected")
         }
     }
 
