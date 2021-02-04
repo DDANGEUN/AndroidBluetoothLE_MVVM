@@ -14,32 +14,46 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/status_text"
+        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#000"
-        android:text="@{viewModel.statusTxt}"
+        android:textColor="@color/lilly_color4"
+        android:text="Press the Scan button to start Ble Scan."
         android:layout_marginBottom="20dp"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
+            android:background="@drawable/button_back"
+            android:layout_margin="6dp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
             android:id="@+id/btn_scan"
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:text="@{viewModel.btnScanTxt}"
+            android:text="@{viewModel.isScanning?`scanning...`:`start scan`}"
             android:onClick="@{()->viewModel.onClickScan()}"
-            android:enabled="@{viewModel.isScanning()?false:true}"/>
-        <Button
+            android:enabled="@{viewModel.isScanning?false:true}"/>
+        <androidx.appcompat.widget.AppCompatButton
+            android:background="@{viewModel.isConnect?@drawable/button_back:@drawable/round_background_color3}"
+            android:layout_margin="6dp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
             android:id="@+id/btn_disconnect"
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:text="disconnect"
             android:onClick="@{()->viewModel.onClickDisconnect()}"
-            android:enabled="@{viewModel.isConnect()?true:false}"/>
-        <Button
+            android:enabled="@{viewModel.isConnect?true:false}"/>
+        <androidx.appcompat.widget.AppCompatButton
+            android:background="@drawable/button_back2"
+            android:layout_margin="6dp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
             android:id="@+id/btn_send"
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:text="Write 0x12"
             android:onClick="@{()->viewModel.onClickWrite()}"/>
@@ -48,24 +62,33 @@
     <ScrollView
 
         android:layout_width="match_parent"
-        android:layout_height="350dp">
+        android:layout_height="500dp">
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_ble_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </ScrollView>
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="▼ Read Data"
+        android:textColor="@color/black"/>
     <ScrollView
-        android:background="#facaf1"
+        android:background="@color/lilly_color4"
         android:id="@+id/sv_read_data"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <TextView
-            android:textColor="@color/black"
+            android:layout_marginStart="10dp"
+            android:lineSpacingExtra ="7dp"
+            android:textColor="@color/white"
             android:id="@+id/txt_read"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{viewModel.txtRead}"/>
+            android:layout_height="wrap_content"/>
     </ScrollView>
 
 

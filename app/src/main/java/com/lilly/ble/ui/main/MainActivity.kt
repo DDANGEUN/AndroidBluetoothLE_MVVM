@@ -1,5 +1,6 @@
 package com.lilly.ble.ui.main
 
+import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.Context
@@ -9,26 +10,26 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.activity.viewModels
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.lilly.ble.Constants.Companion.PERMISSIONS
-import com.lilly.ble.Constants.Companion.REQUEST_ALL_PERMISSION
-import com.lilly.ble.Constants.Companion.REQUEST_ENABLE_BT
+import com.lilly.ble.PERMISSIONS
 import com.lilly.ble.R
+import com.lilly.ble.REQUEST_ALL_PERMISSION
 import com.lilly.ble.adapter.BleListAdapter
 import com.lilly.ble.databinding.ActivityMainBinding
 import com.lilly.ble.viewmodel.MainViewModel
-import kotlinx.android.synthetic.main.activity_main.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class MainActivity : AppCompatActivity() {
-    private val viewModel: MainViewModel by viewModels()
+
+    private val viewModel by viewModel<MainViewModel>()
     private var adapter: BleListAdapter? = null
 
 
@@ -41,17 +42,18 @@ class MainActivity : AppCompatActivity() {
         )
         binding.viewModel = viewModel
 
-        rv_ble_list.setHasFixedSize(true)
+        binding.rvBleList.setHasFixedSize(true)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this)
-        rv_ble_list.layoutManager = layoutManager
+        binding.rvBleList.layoutManager = layoutManager
 
 
         adapter = BleListAdapter()
-        rv_ble_list.adapter = adapter
+        binding.rvBleList.adapter = adapter
         adapter?.setItemClickListener(object : BleListAdapter.ItemClickListener {
-            override fun onClick(view: View, position:Int, device: BluetoothDevice?) {
-                viewModel.connectDevice(device,position)
-                //adapter?.conButtonToggle(position)
+            override fun onClick(view: View, device: BluetoothDevice?) {
+                if (device != null) {
+                    viewModel.connectDevice(device)
+                }
             }
         })
 
@@ -61,26 +63,52 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+        initObserver(binding)
 
-        viewModel.requestEnableBLE.observe(this, Observer {
-            it.getContentIfNotHandled()?.let { // Only proceed if the event has never been handled
+
+
+
+    }
+    private fun initObserver(binding: ActivityMainBinding){
+        viewModel.requestEnableBLE.observe(this, {
+            it.getContentIfNotHandled()?.let {
                 requestEnableBLE()
             }
         })
-        viewModel.listUpdate.observe(this, Observer {
-            it.getContentIfNotHandled()?.let { // Only proceed if the event has never been handled
-                updateBLEList()
+        viewModel.listUpdate.observe(this, {
+            it.getContentIfNotHandled()?.let { scanResults ->
+                adapter?.setItem(scanResults)
             }
         })
-        viewModel.scrollDown.observe(this, Observer {
-            it.getContentIfNotHandled()?.let { // Only proceed if the event has never been handled
-                sv_read_data.post{
-                    sv_read_data.fullScroll(View.FOCUS_DOWN)
+        viewModel.scrollDown.observe(this, {
+            it.getContentIfNotHandled()?.let {
+                binding.svReadData.post{
+                    binding.svReadData.fullScroll(View.FOCUS_DOWN)
                 }
             }
         })
 
-        viewModel.setBLEAdapter()
+        viewModel._isScanning.observe(this,{
+            it.getContentIfNotHandled()?.let{ scanning->
+                viewModel.isScanning.set(scanning)
+            }
+        })
+        viewModel._isConnect.observe(this,{
+            it.getContentIfNotHandled()?.let{ connect->
+                viewModel.isConnect.set(connect)
+            }
+        })
+        viewModel.statusTxt.observe(this,{
+            it.getContentIfNotHandled()?.let{ status ->
+                binding.statusText.text = status
+            }
+        })
+
+        viewModel.readTxt.observe(this,{
+            it.getContentIfNotHandled()?.let{ read ->
+                binding.txtRead.text = read
+            }
+        })
     }
     override fun onResume() {
         super.onResume()
@@ -90,8 +118,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateBLEList(){
-        adapter?.setItem(viewModel.scanResults)
+
+    private val requestEnableBleResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val intent = result.data
+            // do somthing after enableBleRequest
+        }
     }
 
     /**
@@ -99,7 +131,7 @@ class MainActivity : AppCompatActivity() {
      */
     private fun requestEnableBLE() {
         val bleEnableIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-        startActivityForResult(bleEnableIntent, REQUEST_ENABLE_BT)
+        requestEnableBleResult.launch(bleEnableIntent)
     }
 
     private fun hasPermissions(context: Context?, permissions: Array<String>): Boolean {
@@ -120,6 +152,7 @@ class MainActivity : AppCompatActivity() {
         permissions: Array<String?>,
         grantResults: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             REQUEST_ALL_PERMISSION -> {
                 // If request is cancelled, the result arrays are empty.

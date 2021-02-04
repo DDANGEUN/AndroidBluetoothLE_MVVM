@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name = "SwingAnaylzer"
+rootProject.name = "BLE_MVVM"

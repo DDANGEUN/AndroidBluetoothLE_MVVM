@@ -3,5 +3,13 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
-    <color name="black">#000</color>
+
+    <color name="transparent">#00000000</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="lilly_color1">#F08FA9</color>
+    <color name="lilly_color2">#A3A1FB</color>
+    <color name="lilly_color3">#C9C9C9</color>
+    <color name="lilly_color4">#747474</color>
 </resources>

@@ -1,0 +1,20 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:state_pressed="true"
+        android:drawable="@drawable/round_background_color2"/>
+
+    <item
+        android:state_window_focused="false"
+        android:state_enabled="true"
+        android:drawable="@drawable/round_background_color1"/>
+
+    <item
+        android:state_enabled="true"
+        android:drawable="@drawable/round_background_color1"/>
+
+    <item
+        android:state_enabled="false"
+        android:drawable="@drawable/round_background_disable"/>
+
+</selector>

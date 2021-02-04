@@ -3,9 +3,9 @@ package com.lilly.ble.util
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattService
-import com.lilly.ble.Constants.Companion.CHARACTERISTIC_COMMAND_STRING
-import com.lilly.ble.Constants.Companion.CHARACTERISTIC_RESPONSE_STRING
-import com.lilly.ble.Constants.Companion.SERVICE_STRING
+import com.lilly.ble.CHARACTERISTIC_COMMAND_STRING
+import com.lilly.ble.CHARACTERISTIC_RESPONSE_STRING
+import com.lilly.ble.SERVICE_STRING
 import java.util.*
 import kotlin.collections.ArrayList
 
