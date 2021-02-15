@@ -1,97 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
     <data>
+
         <variable
             name="viewModel"
             type="com.lilly.ble.viewmodel.MainViewModel" />
     </data>
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.main.MainActivity"
-    android:layout_margin="10dp"
-    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/status_text"
-        android:layout_marginTop="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/lilly_color4"
-        android:text="Press the Scan button to start Ble Scan."
-        android:layout_marginBottom="20dp"/>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <androidx.appcompat.widget.AppCompatButton
-            android:background="@drawable/button_back"
-            android:layout_margin="6dp"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:id="@+id/btn_scan"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:text="@{viewModel.isScanning?`scanning...`:`start scan`}"
-            android:onClick="@{()->viewModel.onClickScan()}"
-            android:enabled="@{viewModel.isScanning?false:true}"/>
-        <androidx.appcompat.widget.AppCompatButton
-            android:background="@{viewModel.isConnect?@drawable/button_back:@drawable/round_background_color3}"
-            android:layout_margin="6dp"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:id="@+id/btn_disconnect"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:text="disconnect"
-            android:onClick="@{()->viewModel.onClickDisconnect()}"
-            android:enabled="@{viewModel.isConnect?true:false}"/>
-        <androidx.appcompat.widget.AppCompatButton
-            android:background="@drawable/button_back2"
-            android:layout_margin="6dp"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:id="@+id/btn_send"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:text="Write 0x12"
-            android:onClick="@{()->viewModel.onClickWrite()}"/>
-    </LinearLayout>
-
-    <ScrollView
-
-        android:layout_width="match_parent"
-        android:layout_height="500dp">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_ble_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </ScrollView>
-
-    <TextView
-        android:layout_marginTop="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="▼ Read Data"
-        android:textColor="@color/black"/>
-    <ScrollView
-        android:background="@color/lilly_color4"
-        android:id="@+id/sv_read_data"
-        android:layout_marginTop="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:orientation="vertical">
 
         <TextView
-            android:layout_marginStart="10dp"
-            android:lineSpacingExtra ="7dp"
-            android:textColor="@color/white"
-            android:id="@+id/txt_read"
+            android:id="@+id/status_text"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </ScrollView>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:text="Press the Scan button to start Ble Scan."
+            android:textColor="@color/lilly_color4" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_scan"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:background="@drawable/button_back"
+                android:enabled="@{viewModel.isScanning?false:true}"
+                android:onClick="@{()->viewModel.onClickScan()}"
+                android:text="@{viewModel.isScanning?`scanning...`:`start scan`}"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_disconnect"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:background="@{viewModel.isConnect?@drawable/button_back:@drawable/round_background_color3}"
+                android:enabled="@{viewModel.isConnect?true:false}"
+                android:onClick="@{()->viewModel.onClickDisconnect()}"
+                android:text="disconnect"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_send"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:background="@drawable/button_back2"
+                android:onClick="@{()->viewModel.onClickWrite()}"
+                android:text="Write 0x12"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <ScrollView
+
+            android:layout_width="match_parent"
+            android:layout_height="300dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_ble_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </ScrollView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="▼ Read Data"
+            android:textColor="@color/black" />
+
+        <ScrollView
+            android:id="@+id/sv_read_data"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:background="@color/lilly_color4">
+
+            <TextView
+                android:id="@+id/txt_read"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:lineSpacingExtra="7dp"
+                android:textColor="@color/white" />
+        </ScrollView>
 
 
-
-</LinearLayout>
+    </LinearLayout>
 </layout>

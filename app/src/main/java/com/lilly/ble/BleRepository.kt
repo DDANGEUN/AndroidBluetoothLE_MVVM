@@ -61,8 +61,8 @@ class BleRepository {
             .setScanMode(ScanSettings.SCAN_MODE_LOW_POWER)
             .build()
         // start scan
-        //bleAdapter?.bluetoothLeScanner?.startScan(filters, settings, BLEScanCallback)
-        bleAdapter?.bluetoothLeScanner?.startScan(BLEScanCallback)
+        bleAdapter?.bluetoothLeScanner?.startScan(filters, settings, BLEScanCallback)
+        //bleAdapter?.bluetoothLeScanner?.startScan(BLEScanCallback)
 
         statusTxt.postValue(Event("Scanning...."))
         isScanning.postValue(Event(true))
