@@ -5,7 +5,7 @@ bluetooth low energy example (mvvm)
 
 # Info
 
-*This code has the ble method in Repository.
+*This code has the ble method in Repository.  
 If you want to see the Ble MVVM code using Service,  
 See [**AndroidBluetoothLE_MVVM_Service**](https://github.com/DDANGEUN/AndroidBluetoothLE_MVVM_Service)*
 
