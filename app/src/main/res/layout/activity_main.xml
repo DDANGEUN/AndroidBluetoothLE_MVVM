@@ -84,7 +84,7 @@
             android:textColor="@color/black" />
 
         <ScrollView
-            android:id="@+id/sv_read_data"
+            android:id="@+id/scroller"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"

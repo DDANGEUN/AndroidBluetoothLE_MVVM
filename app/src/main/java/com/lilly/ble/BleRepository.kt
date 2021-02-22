@@ -14,6 +14,8 @@ import androidx.lifecycle.MutableLiveData
 import com.lilly.ble.util.BluetoothUtils
 import com.lilly.ble.util.Event
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import java.util.*
 import kotlin.concurrent.schedule
 
@@ -32,10 +34,31 @@ class BleRepository {
 
     // scan results
     var scanResults: ArrayList<BluetoothDevice>? = ArrayList()
-    val txtRead = MutableLiveData<Event<String>>()
+
+    var statusTxt: String = ""
+    var txtRead: String = ""
+
+    var isStatusChange: Boolean = false
+    var isTxtRead: Boolean = false
+    fun fetchReadText() = flow{
+        while(true) {
+            if(isTxtRead) {
+                emit(txtRead)
+                isTxtRead = false
+            }
+        }
+    }.flowOn(Dispatchers.Default)
+    fun fetchStatusText() = flow{
+        while(true) {
+            if(isStatusChange) {
+                emit(statusTxt)
+                isStatusChange = false
+            }
+        }
+    }.flowOn(Dispatchers.Default)
+
 
     val requestEnableBLE = MutableLiveData<Event<Boolean>>()
-    val statusTxt = MutableLiveData<Event<String>>()
     val isScanning = MutableLiveData(Event(false))
     val isConnect = MutableLiveData(Event(false))
     val listUpdate = MutableLiveData<Event<ArrayList<BluetoothDevice>?>>()
@@ -46,7 +69,8 @@ class BleRepository {
         // check ble adapter and ble enabled
         if (bleAdapter == null || !bleAdapter?.isEnabled!!) {
             requestEnableBLE.postValue(Event(true))
-            statusTxt.postValue(Event("Scanning Failed: ble not enabled"))
+            statusTxt ="Scanning Failed: ble not enabled"
+            isStatusChange = true
             return
         }
         //scan filter
@@ -64,7 +88,8 @@ class BleRepository {
         bleAdapter?.bluetoothLeScanner?.startScan(filters, settings, BLEScanCallback)
         //bleAdapter?.bluetoothLeScanner?.startScan(BLEScanCallback)
 
-        statusTxt.postValue(Event("Scanning...."))
+        statusTxt = "Scanning...."
+        isStatusChange = true
         isScanning.postValue(Event(true))
 
         Timer("SettingUp", false).schedule(3000) { stopScan() }
@@ -73,8 +98,9 @@ class BleRepository {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun stopScan(){
         bleAdapter?.bluetoothLeScanner?.stopScan(BLEScanCallback)
-            isScanning.postValue(Event(false))
-            statusTxt.postValue(Event("Scan finished. Click on the name to connect to the device."))
+        isScanning.postValue(Event(false))
+        statusTxt = "Scan finished. Click on the name to connect to the device."
+        isStatusChange = true
 
 
         scanResults = ArrayList() //list 초기화
@@ -100,7 +126,8 @@ class BleRepository {
 
         override fun onScanFailed(_error: Int) {
             Log.e(TAG, "BLE scan failed with code $_error")
-            statusTxt.postValue(Event("BLE scan failed with code $_error"))
+            statusTxt = "BLE scan failed with code $_error"
+            isStatusChange = true
         }
 
         /**
@@ -118,7 +145,8 @@ class BleRepository {
             }
             scanResults?.add(result.device)
             // log
-            statusTxt.postValue(Event("add scanned device: $deviceAddress"))
+            statusTxt = "add scanned device: $deviceAddress"
+            isStatusChange = true
             listUpdate.postValue(Event(scanResults))
         }
     }
@@ -139,7 +167,8 @@ class BleRepository {
             if( newState == BluetoothProfile.STATE_CONNECTED ) {
                 // update the connection status message
 
-                statusTxt.postValue(Event("Connected"))
+                statusTxt = "Connected"
+                isStatusChange = true
                 Log.d(TAG, "Connected to the GATT server")
                 gatt.discoverServices()
             } else if ( newState == BluetoothProfile.STATE_DISCONNECTED ) {
@@ -218,14 +247,13 @@ class BleRepository {
          * Log the value of the characteristic
          * @param characteristic
          */
-        private var _msg = ""
+
         private fun readCharacteristic(characteristic: BluetoothGattCharacteristic) {
 
             val msg = characteristic.getStringValue(0)
-            _msg += msg
-            txtRead.postValue(Event(_msg))
-            scrollDown.postValue(Event(true))
 
+            txtRead = msg
+            isTxtRead = true
 
             Log.d(TAG, "read: $msg")
         }
@@ -238,7 +266,8 @@ class BleRepository {
      */
     fun connectDevice(device: BluetoothDevice?) {
         // update the status
-        statusTxt.postValue(Event("Connecting to ${device?.address}"))
+        statusTxt = "Connecting to ${device?.address}"
+        isStatusChange = true
         bleGatt = device?.connectGatt(MyApplication.applicationContext(), false, gattClientCallback)
     }
 
@@ -253,7 +282,8 @@ class BleRepository {
         if (bleGatt != null) {
             bleGatt!!.disconnect()
             bleGatt!!.close()
-            statusTxt.postValue(Event("Disconnected"))
+            statusTxt = "Disconnected"
+            isStatusChange = true
             isConnect.postValue(Event(false))
         }
     }

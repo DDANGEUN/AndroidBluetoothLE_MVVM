@@ -80,13 +80,7 @@ class MainActivity : AppCompatActivity() {
                 adapter?.setItem(scanResults)
             }
         })
-        viewModel.scrollDown.observe(this, {
-            it.getContentIfNotHandled()?.let {
-                binding.svReadData.post{
-                    binding.svReadData.fullScroll(View.FOCUS_DOWN)
-                }
-            }
-        })
+
 
         viewModel._isScanning.observe(this,{
             it.getContentIfNotHandled()?.let{ scanning->
@@ -99,15 +93,22 @@ class MainActivity : AppCompatActivity() {
             }
         })
         viewModel.statusTxt.observe(this,{
-            it.getContentIfNotHandled()?.let{ status ->
-                binding.statusText.text = status
-            }
+
+           binding.statusText.text = it
+
         })
 
         viewModel.readTxt.observe(this,{
-            it.getContentIfNotHandled()?.let{ read ->
-                binding.txtRead.text = read
+
+           binding.txtRead.append(it)
+            
+            if ((binding.txtRead.measuredHeight - binding.scroller.scrollY) <=
+                (binding.scroller.height + binding.txtRead.lineHeight)) {
+                binding.scroller.post {
+                    binding.scroller.smoothScrollTo(0, binding.txtRead.bottom)
+                }
             }
+
         })
     }
     override fun onResume() {

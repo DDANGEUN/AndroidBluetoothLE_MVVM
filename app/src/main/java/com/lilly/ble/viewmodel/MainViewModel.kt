@@ -12,10 +12,10 @@ import java.util.*
 
 
 class MainViewModel(private val bleRepository: BleRepository) : ViewModel() {
-    val statusTxt: LiveData<Event<String>>
-        get() = bleRepository.statusTxt
-    val readTxt: LiveData<Event<String>>
-        get() = bleRepository.txtRead
+    val statusTxt: LiveData<String>
+        get() = bleRepository.fetchStatusText().asLiveData(viewModelScope.coroutineContext)
+    val readTxt: LiveData<String>
+        get() = bleRepository.fetchReadText().asLiveData(viewModelScope.coroutineContext)
 
 
 
@@ -29,8 +29,6 @@ class MainViewModel(private val bleRepository: BleRepository) : ViewModel() {
         get() = bleRepository.requestEnableBLE
     val listUpdate : LiveData<Event<ArrayList<BluetoothDevice>?>>
         get() = bleRepository.listUpdate
-    val scrollDown : LiveData<Event<Boolean>>
-        get() = bleRepository.scrollDown
 
     val _isScanning: LiveData<Event<Boolean>>
         get() = bleRepository.isScanning
